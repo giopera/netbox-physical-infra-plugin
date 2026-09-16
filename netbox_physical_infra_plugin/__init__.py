@@ -24,7 +24,7 @@ class PhysicalinfraConfig(PluginConfig):
     version = __version__
     base_url = "netbox_physical_infra_plugin"
     min_version = "4.5.0"
-    max_version = "4.5.99"
+    max_version = "4.7.99"
     graphql_schema = "graphql.schema"
     template_extensions = 'template_extensions.template_extensions'
 
