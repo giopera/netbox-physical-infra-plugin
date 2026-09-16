@@ -1,9 +1,8 @@
 from django import forms
-from django.contrib.contenttypes.models import ContentType
-
 from netbox.forms import NetBoxModelForm, NetBoxModelFilterSetForm
 from utilities.forms.fields import DynamicModelChoiceField, DynamicModelMultipleChoiceField
-from dcim.models import Site, Rack, Cable
+from utilities.forms.rendering import FieldSet
+from dcim.models import Cable, Rack, Site
 
 from .models import JunctionBox, Conduit, ConnectionPositionChoices
 
@@ -16,15 +15,16 @@ class JunctionBoxForm(NetBoxModelForm):
     )
 
     fieldsets = (
-        ('Junction Box', ('name', 'label', 'site')),
-        ('Dimensions & Specifications', (
+        FieldSet('name', 'label', 'site', name='Junction Box'),
+        FieldSet(
             'width_mm',
             'height_mm',
             'depth_mm',
             'ip_rating',
             'material',
-        )),
-        ('Tags', ('tags',)),
+            name='Dimensions & Specifications',
+        ),
+        FieldSet('tags', name='Tags'),
     )
 
     class Meta:
@@ -49,17 +49,8 @@ class JunctionBoxForm(NetBoxModelForm):
 
 
 class ConduitForm(NetBoxModelForm):
-    # Restrict generic foreign key targets to Racks and Junction Boxes
-    start_object_type = forms.ModelChoiceField(
-        queryset=ContentType.objects.filter(model__in=['rack', 'junctionbox']),
-        required=True,
-        label='Start Object Type'
-    )
-    end_object_type = forms.ModelChoiceField(
-        queryset=ContentType.objects.filter(model__in=['rack', 'junctionbox']),
-        required=True,
-        label='End Object Type'
-    )
+    start_termination = forms.ChoiceField(required=True, label='Start Termination')
+    end_termination = forms.ChoiceField(required=True, label='End Termination')
 
     # Multi-select field for attaching standard NetBox cables inside the conduit
     cables = DynamicModelMultipleChoiceField(
@@ -70,25 +61,24 @@ class ConduitForm(NetBoxModelForm):
     )
 
     fieldsets = (
-        ('Conduit Details', (
+        FieldSet(
             'name',
             'label',
             'length_meters',
             'diameter_mm',
             'max_capacity_percentage',
-        )),
-        ('Start Termination', (
-            'start_object_type',
-            'start_object_id',
-            'start_position',
-        )),
-        ('End Termination', (
-            'end_object_type',
-            'end_object_id',
-            'end_position',
-        )),
-        ('Cable Management', ('cables',)),
-        ('Tags', ('tags',)),
+            name='Conduit Details',
+        ),
+        FieldSet(
+            'start_termination', 'start_position',
+            name='Start Termination',
+        ),
+        FieldSet(
+            'end_termination', 'end_position',
+            name='End Termination',
+        ),
+        FieldSet('cables', name='Cable Management'),
+        FieldSet('tags', name='Tags'),
     )
 
     class Meta:
@@ -113,6 +103,64 @@ class ConduitForm(NetBoxModelForm):
             'diameter_mm': 'Inner Diameter (mm)',
             'max_capacity_percentage': 'Max Capacity (%)',
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # The generic foreign-key storage fields are required in Meta.fields so
+        # Django can build the model form, but the combined selectors replace
+        # them in the UI.
+        for field_name in (
+            'start_object_type',
+            'start_object_id',
+            'end_object_type',
+            'end_object_id',
+        ):
+            self.fields.pop(field_name, None)
+
+        choices = [('', '---------')]
+        choices.extend(
+            (self._termination_value(obj), f'Rack: {obj}')
+            for obj in Rack.objects.all().order_by('name')
+        )
+        choices.extend(
+            (self._termination_value(obj), f'Junction Box: {obj}')
+            for obj in JunctionBox.objects.all().order_by('name')
+        )
+        self.fields['start_termination'].choices = choices
+        self.fields['end_termination'].choices = choices
+
+        if self.instance.pk:
+            self.initial['start_termination'] = self._termination_value(self.instance.start_termination)
+            self.initial['end_termination'] = self._termination_value(self.instance.end_termination)
+
+    @staticmethod
+    def _termination_value(obj):
+        if obj is None:
+            return ''
+        return f'{obj._meta.app_label}:{obj._meta.model_name}:{obj.pk}'
+
+    @staticmethod
+    def _termination_object(value):
+        app_label, model_name, object_id = value.split(':', 2)
+        if (app_label, model_name) == ('dcim', 'rack'):
+            return Rack.objects.get(pk=object_id)
+        if (app_label, model_name) == ('netbox_physical_infra_plugin', 'junctionbox'):
+            return JunctionBox.objects.get(pk=object_id)
+        raise forms.ValidationError('Select a Rack or Junction Box.')
+
+    def clean(self):
+        cleaned_data = super().clean() or self.cleaned_data
+        for prefix in ('start', 'end'):
+            field_name = f'{prefix}_termination'
+            value = cleaned_data.get(field_name)
+            if not value:
+                continue
+            try:
+                setattr(self.instance, f'{prefix}_termination', self._termination_object(value))
+            except (JunctionBox.DoesNotExist, Rack.DoesNotExist, ValueError):
+                self.add_error(field_name, 'Select a valid Rack or Junction Box.')
+        return cleaned_data
 
 
 # --- Filter Forms (used for searching/filtering lists in the UI) ---

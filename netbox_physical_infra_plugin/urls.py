@@ -37,4 +37,6 @@ urlpatterns = (
     
     # Bulk operations
     path('conduits/delete/', views.ConduitBulkDeleteView.as_view(), name='conduit_bulk_delete'),
+    path('cables/<int:pk>/path-trace/', views.CableConduitCustomTraceView.as_view(), name='cable_custom_trace'),
+    path('cables/<int:pk>/path-trace/download/', views.CableConduitSVGDownloadView.as_view(), name='cable_trace_download'),
 )

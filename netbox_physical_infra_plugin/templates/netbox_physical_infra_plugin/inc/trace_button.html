@@ -1,0 +1,8 @@
+<a href="{% url 'plugins:netbox_physical_infra_plugin:cable_custom_trace' pk=cable.pk %}" 
+  class="btn btn-sm btn-outline-primary" title="Trace full cable path">
+  <i class="mdi mdi-transit-connection-variant"></i> Trace Full Cable Path
+</a>
+<a href="{% url 'plugins:netbox_physical_infra_plugin:cable_trace_download' pk=cable.pk %}"
+  class="btn btn-sm btn-outline-secondary" title="Download cable path SVG">
+  <i class="mdi mdi-download"></i> Download SVG
+</a>

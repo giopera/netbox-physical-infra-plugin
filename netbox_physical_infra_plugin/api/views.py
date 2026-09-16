@@ -10,11 +10,16 @@ https://www.django-rest-framework.org/api-guide/viewsets/
 
 from netbox.api.viewsets import NetBoxModelViewSet
 
-from ..models import Physicalinfra
-from .serializers import PhysicalinfraSerializer
+from ..models import Conduit, JunctionBox
+from .serializers import ConduitSerializer, JunctionBoxSerializer
 
 
-class PhysicalinfraViewSet(NetBoxModelViewSet):
-    queryset = Physicalinfra.objects.all()
-    serializer_class = PhysicalinfraSerializer
+class JunctionBoxViewSet(NetBoxModelViewSet):
+    queryset = JunctionBox.objects.all()
+    serializer_class = JunctionBoxSerializer
+
+
+class ConduitViewSet(NetBoxModelViewSet):
+    queryset = Conduit.objects.all()
+    serializer_class = ConduitSerializer
 

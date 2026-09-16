@@ -1,5 +1,11 @@
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, render
+
+from dcim.models import Cable
 from netbox.views import generic
 from . import forms, models, tables, filtersets
+from .svg_generator import generate_conduit_trace_svg
+from .tracer import trace_cable_path
 
 # -------------------------------------------------------------------------
 # Junction Box Views
@@ -80,3 +86,30 @@ class ConduitBulkDeleteView(generic.BulkDeleteView):
     queryset = models.Conduit.objects.all()
     filterset = filtersets.ConduitFilterSet
     table = tables.ConduitTable
+
+
+class CableConduitCustomTraceView(generic.ObjectView):
+    queryset = Cable.objects.all()
+    template_name = 'netbox_physical_infra_plugin/pathtrace.html'
+
+    def get(self, request, pk):
+        cable = get_object_or_404(Cable, pk=pk)
+        svg_content = generate_conduit_trace_svg(cable)
+
+        return render(request, self.template_name, {
+            'object': cable,
+            'svg_content': svg_content,
+        })
+
+
+class CableConduitSVGDownloadView(generic.ObjectView):
+    queryset = Cable.objects.all()
+
+    def get(self, request, pk):
+        cable = get_object_or_404(Cable, pk=pk)
+        svg_content = generate_conduit_trace_svg(cable)
+        filename = f'cable-{cable.pk}-path-trace.svg'
+
+        response = HttpResponse(svg_content, content_type='image/svg+xml')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        return response

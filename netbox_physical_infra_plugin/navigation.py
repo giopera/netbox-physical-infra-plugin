@@ -1,10 +1,10 @@
 from netbox.plugins import PluginMenuItem, PluginMenuButton
-from utilities.choices import ButtonColorChoices
+from netbox.choices import ButtonColorChoices
 
 # Define the Add button for Junction Boxes
 junctionbox_buttons = [
     PluginMenuButton(
-        link='plugins:netbox_cable_pathing:junctionbox_add',
+        link='plugins:netbox_physical_infra_plugin:junctionbox_add',
         title='Add',
         icon_class='mdi mdi-plus-thick',
         color=ButtonColorChoices.GREEN
@@ -14,7 +14,7 @@ junctionbox_buttons = [
 # Define the Add button for Conduits
 conduit_buttons = [
     PluginMenuButton(
-        link='plugins:netbox_cable_pathing:conduit_add',
+        link='plugins:netbox_physical_infra_plugin:conduit_add',
         title='Add',
         icon_class='mdi mdi-plus-thick',
         color=ButtonColorChoices.GREEN
@@ -24,15 +24,15 @@ conduit_buttons = [
 # Register the menu items
 menu_items = (
     PluginMenuItem(
-        link='plugins:netbox_cable_pathing:junctionbox_list',
+        link='plugins:netbox_physical_infra_plugin:junctionbox_list',
         link_text='Junction Boxes',
-        permissions=['netbox_cable_pathing.view_junctionbox'],
+        permissions=['netbox_physical_infra_plugin.view_junctionbox'],
         buttons=junctionbox_buttons
     ),
     PluginMenuItem(
-        link='plugins:netbox_cable_pathing:conduit_list',
+        link='plugins:netbox_physical_infra_plugin:conduit_list',
         link_text='Conduits',
-        permissions=['netbox_cable_pathing.view_conduit'],
+        permissions=['netbox_physical_infra_plugin.view_conduit'],
         buttons=conduit_buttons
     ),
 )

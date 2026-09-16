@@ -26,6 +26,7 @@ class PhysicalinfraConfig(PluginConfig):
     min_version = "4.5.0"
     max_version = "4.5.99"
     graphql_schema = "graphql.schema"
+    template_extensions = 'template_extensions.template_extensions'
 
 
 config = PhysicalinfraConfig

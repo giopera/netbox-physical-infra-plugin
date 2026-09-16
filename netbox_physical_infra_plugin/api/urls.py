@@ -10,12 +10,13 @@ https://www.django-rest-framework.org/api-guide/routers/
 
 from netbox.api.routers import NetBoxRouter
 
-from .views import PhysicalinfraViewSet
+from .views import ConduitViewSet, JunctionBoxViewSet
 
 app_name = "netbox_physical_infra_plugin"
 
 router = NetBoxRouter()
-router.register("physical-infras", PhysicalinfraViewSet)
+router.register("junction-boxes", JunctionBoxViewSet)
+router.register("conduits", ConduitViewSet)
 
 urlpatterns = router.urls
 

@@ -14,14 +14,34 @@ https://www.django-rest-framework.org/api-guide/serializers/
 from netbox.api.serializers import NetBoxModelSerializer
 from rest_framework import serializers
 
-from ..models import Physicalinfra
+from ..models import Conduit, JunctionBox
 
 
-class PhysicalinfraSerializer(NetBoxModelSerializer):
+class JunctionBoxSerializer(NetBoxModelSerializer):
     url = serializers.HyperlinkedIdentityField(
-        view_name="plugins-api:netbox_physical_infra_plugin-api:physicalinfra-detail"
+        view_name="plugins-api:netbox_physical_infra_plugin-api:junctionbox-detail"
     )
 
     class Meta:
-        model = Physicalinfra
-        fields = ("id", "url", "display", "name", "tags", "custom_fields", "created", "last_updated")
+        model = JunctionBox
+        fields = (
+            "id", "url", "display", "name", "label", "site", "width_mm",
+            "height_mm", "depth_mm", "ip_rating", "material", "tags",
+            "custom_fields", "created", "last_updated",
+        )
+
+
+class ConduitSerializer(NetBoxModelSerializer):
+    url = serializers.HyperlinkedIdentityField(
+        view_name="plugins-api:netbox_physical_infra_plugin-api:conduit-detail"
+    )
+
+    class Meta:
+        model = Conduit
+        fields = (
+            "id", "url", "display", "name", "label", "length_meters",
+            "diameter_mm", "max_capacity_percentage", "start_object_type",
+            "start_object_id", "start_position", "end_object_type",
+            "end_object_id", "end_position", "cables", "tags", "custom_fields",
+            "created", "last_updated",
+        )

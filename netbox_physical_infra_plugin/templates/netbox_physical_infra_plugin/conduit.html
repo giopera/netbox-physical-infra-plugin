@@ -1,0 +1,68 @@
+{% extends 'generic/object.html' %}
+{% load helpers %}
+
+{% block content %}
+  <div class="row mb-3">
+    <div class="col col-12 col-md-6">
+      <div class="card">
+        <h2 class="card-header">Conduit</h2>
+        <table class="table table-hover attr-table">
+          <tr>
+            <th scope="row">Name</th>
+            <td>{{ object.name }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Label</th>
+            <td>{{ object.label|placeholder }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Length</th>
+            <td>{{ object.length_meters|placeholder }}{% if object.length_meters %} m{% endif %}</td>
+          </tr>
+          <tr>
+            <th scope="row">Diameter</th>
+            <td>{{ object.diameter_mm }} mm</td>
+          </tr>
+          <tr>
+            <th scope="row">Capacity</th>
+            <td>{{ object.max_capacity_percentage }}%</td>
+          </tr>
+        </table>
+      </div>
+      {% include 'inc/panels/custom_fields.html' %}
+    </div>
+    <div class="col col-12 col-md-6">
+      <div class="card">
+        <h2 class="card-header">Terminations</h2>
+        <table class="table table-hover attr-table">
+          <tr>
+            <th scope="row">Start</th>
+            <td>{{ object.start_termination|linkify|placeholder }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Start Position</th>
+            <td>{{ object.get_start_position_display|placeholder }}</td>
+          </tr>
+          <tr>
+            <th scope="row">End</th>
+            <td>{{ object.end_termination|linkify|placeholder }}</td>
+          </tr>
+          <tr>
+            <th scope="row">End Position</th>
+            <td>{{ object.get_end_position_display|placeholder }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Cable Count</th>
+            <td>{{ current_cable_count }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Occupancy</th>
+            <td>{{ occupancy_status }}%</td>
+          </tr>
+        </table>
+      </div>
+      {% include 'inc/panels/tags.html' %}
+      {% include 'inc/panels/comments.html' %}
+    </div>
+  </div>
+{% endblock content %}

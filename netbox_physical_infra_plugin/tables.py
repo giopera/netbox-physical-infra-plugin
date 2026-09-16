@@ -13,7 +13,7 @@ class JunctionBoxTable(NetBoxTable):
     )
     # Render tags using NetBox's colored tag UI
     tags = columns.TagColumn(
-        url_name='plugins:netbox_cable_pathing:junctionbox_list'
+        url_name='plugins:netbox_physical_infra_plugin:junctionbox_list'
     )
 
     class Meta(NetBoxTable.Meta):
@@ -57,7 +57,7 @@ class ConduitTable(NetBoxTable):
     )
 
     tags = columns.TagColumn(
-        url_name='plugins:netbox_cable_pathing:conduit_list'
+        url_name='plugins:netbox_physical_infra_plugin:conduit_list'
     )
 
     class Meta(NetBoxTable.Meta):

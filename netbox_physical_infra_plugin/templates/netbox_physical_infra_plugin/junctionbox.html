@@ -1,0 +1,56 @@
+{% extends 'generic/object.html' %}
+{% load helpers %}
+
+{% block content %}
+  <div class="row mb-3">
+    <div class="col col-12 col-md-6">
+      <div class="card">
+        <h2 class="card-header">Junction Box</h2>
+        <table class="table table-hover attr-table">
+          <tr>
+            <th scope="row">Name</th>
+            <td>{{ object.name }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Label</th>
+            <td>{{ object.label|placeholder }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Site</th>
+            <td>{{ object.site|linkify }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Width</th>
+            <td>{{ object.width_mm }} mm</td>
+          </tr>
+          <tr>
+            <th scope="row">Height</th>
+            <td>{{ object.height_mm }} mm</td>
+          </tr>
+          <tr>
+            <th scope="row">Depth</th>
+            <td>{{ object.depth_mm|placeholder }}{% if object.depth_mm %} mm{% endif %}</td>
+          </tr>
+        </table>
+      </div>
+      {% include 'inc/panels/custom_fields.html' %}
+    </div>
+    <div class="col col-12 col-md-6">
+      <div class="card">
+        <h2 class="card-header">Specifications</h2>
+        <table class="table table-hover attr-table">
+          <tr>
+            <th scope="row">IP Rating</th>
+            <td>{{ object.ip_rating|placeholder }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Material</th>
+            <td>{{ object.material|placeholder }}</td>
+          </tr>
+        </table>
+      </div>
+      {% include 'inc/panels/tags.html' %}
+      {% include 'inc/panels/comments.html' %}
+    </div>
+  </div>
+{% endblock content %}

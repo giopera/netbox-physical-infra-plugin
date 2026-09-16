@@ -7,18 +7,18 @@ global search. See: https://docs.netbox.dev/en/stable/plugins/development/search
 
 from netbox.search import SearchIndex
 
-from .models import Physicalinfra
+from .models import Conduit, JunctionBox
 
 
-class PhysicalinfraIndex(SearchIndex):
+class JunctionBoxIndex(SearchIndex):
     """
-    Search index for Physicalinfra model.
+    Search index for JunctionBox model.
 
-    This enables Physicalinfra objects to appear in NetBox's global
+    This enables JunctionBox objects to appear in NetBox's global
     search results.
     """
 
-    model = Physicalinfra
+    model = JunctionBox
 
     # Fields to index for search with their weights
     # Higher weight = higher priority in search results
@@ -55,10 +55,20 @@ class PhysicalinfraIndex(SearchIndex):
     # category = 'Netbox Physical Infra Plugin'
 
 
+class ConduitIndex(SearchIndex):
+    """Search index for Conduit model."""
+
+    model = Conduit
+    fields = (
+        ('name', 100),
+    )
+
+
 # Register all search indexes for this plugin
 # The PluginConfig will automatically load these indexes
 indexes = (
-    PhysicalinfraIndex,
+    JunctionBoxIndex,
+    ConduitIndex,
 )
 
 
@@ -75,6 +85,7 @@ indexes = (
 #     display_attrs = ('status', 'type')
 #
 # indexes = (
-#     PhysicalinfraIndex,
+#     JunctionBoxIndex,
+#     ConduitIndex,
 #     AnotherModelIndex,
 # )

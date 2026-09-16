@@ -13,27 +13,33 @@ from typing import List
 import strawberry
 import strawberry_django
 
-from .models import Physicalinfra
+from .models import Conduit, JunctionBox
 
 
 @strawberry_django.type(
-    Physicalinfra,
+    JunctionBox,
     fields='__all__',
 )
-class PhysicalinfraType:
-    """GraphQL type for Physicalinfra model."""
+class JunctionBoxType:
+    """GraphQL type for JunctionBox model."""
+    pass
+
+
+@strawberry_django.type(Conduit, fields='__all__')
+class ConduitType:
+    """GraphQL type for Conduit model."""
     pass
 
 
 @strawberry.type(name="Query")
-class PhysicalinfraQuery:
+class PhysicalInfraQuery:
     """GraphQL queries for Netbox Physical Infra Plugin."""
 
-    physicalinfra: PhysicalinfraType = strawberry_django.field()
-    physicalinfra_list: List[PhysicalinfraType] = strawberry_django.field()
+    junctionbox: JunctionBoxType = strawberry_django.field()
+    junctionbox_list: List[JunctionBoxType] = strawberry_django.field()
+    conduit: ConduitType = strawberry_django.field()
+    conduit_list: List[ConduitType] = strawberry_django.field()
 
 
-schema = [
-    PhysicalinfraQuery,
-]
+schema = [PhysicalInfraQuery]
 
