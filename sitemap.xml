@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://giopera.github.io/netbox-physical-infra-plugin/</loc>
+         <lastmod>2026-09-23</lastmod>
+    </url>
+    <url>
+         <loc>https://giopera.github.io/netbox-physical-infra-plugin/changelog/</loc>
+         <lastmod>2026-09-23</lastmod>
+    </url>
+    <url>
+         <loc>https://giopera.github.io/netbox-physical-infra-plugin/contributing/</loc>
+         <lastmod>2026-09-23</lastmod>
+    </url>
+</urlset>
