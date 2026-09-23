@@ -136,9 +136,9 @@
             <div class="d-flex gap-1 justify-content-center flex-wrap">
               {% for terminal in object.terminal_visualizer.down %}
                 {% if terminal.is_connected %}
-                  <span class="badge bg-danger" title="{{ terminal.name }} (Connected)">■ {{ terminal.name }}</span>
+                  <span class="badge bg-danger text-bg-red" title="{{ terminal.name }} (Connected)">■ {{ terminal.name }}</span>
                 {% else %}
-                  <span class="badge bg-success" title="{{ terminal.name }} (Available)">□ {{ terminal.name }}</span>
+                  <span class="badge bg-success text-bg-green" title="{{ terminal.name }} (Available)">□ {{ terminal.name }}</span>
                 {% endif %}
               {% empty %}
                 <span class="text-muted small">No terminals defined</span>
@@ -148,8 +148,8 @@
 
         </div>
         <div class="card-footer text-center">
-          <span class="badge bg-success me-3">□ Available Terminal</span>
-          <span class="badge bg-danger">■ Connected Terminal</span>
+          <span class="badge bg-success me-3 text-bg-green">□ Available Terminal</span>
+          <span class="badge bg-danger text-bg-red">■ Connected Terminal</span>
         </div>
       </div>
     </div>

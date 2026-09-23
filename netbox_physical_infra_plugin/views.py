@@ -7,6 +7,7 @@ from dcim.models import Cable
 from netbox.views import generic
 from . import forms, models, tables, filtersets
 from .svg_generator import generate_conduit_trace_svg
+from .network_svg import generate_infrastructure_map_svg
 
 # -------------------------------------------------------------------------
 # Junction Box Views
@@ -40,6 +41,33 @@ class JunctionBoxBulkDeleteView(generic.BulkDeleteView):
     queryset = models.JunctionBox.objects.all()
     filterset = filtersets.JunctionBoxFilterSet
     table = tables.JunctionBoxTable
+
+class JunctionBoxNetworkMapView(generic.ObjectView):
+    """Renders the full infrastructure map reachable from this JunctionBox:
+    every JunctionBox connected to it (transitively, through any number of
+    conduits and intermediate boxes), with terminals drawn on the correct
+    side of each box."""
+    queryset = models.JunctionBox.objects.all()
+    template_name = 'netbox_physical_infra_plugin/networkmap.html'
+
+    def get(self, request, pk):
+        box = get_object_or_404(models.JunctionBox, pk=pk)
+        svg_content = generate_infrastructure_map_svg(box)
+        return render(request, self.template_name, {
+            'object': box,
+            'svg_content': svg_content,
+        })
+
+class JunctionBoxNetworkMapSVGDownloadView(generic.ObjectView):
+    queryset = models.JunctionBox.objects.all()
+
+    def get(self, request, pk):
+        box = get_object_or_404(models.JunctionBox, pk=pk)
+        svg_content = generate_infrastructure_map_svg(box)
+        filename = f'junction-box-{box.pk}-network-map.svg'
+        response = HttpResponse(svg_content, content_type='image/svg+xml')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        return response
 
 # -------------------------------------------------------------------------
 # Terminal Views
@@ -83,10 +111,17 @@ class TerminalBulkAddView(View):
             names = form.cleaned_data['name_pattern']
             box = form.cleaned_data['junction_box']
             pos = form.cleaned_data['position']
+            start_idx = form.cleaned_data['starting_index']
             desc = form.cleaned_data['description']
             
-            for name in names:
-                models.Terminal.objects.create(junction_box=box, name=name, position=pos, description=desc)
+            for offset, name in enumerate(names):
+                models.Terminal.objects.create(
+                    junction_box=box,
+                    name=name,
+                    position=pos,
+                    index=start_idx + offset,
+                    description=desc
+                )
                 
             messages.success(request, f"Added {len(names)} terminals to {box}.")
             return redirect(box.get_absolute_url())

@@ -15,6 +15,8 @@ urlpatterns = (
     path('junction-boxes/<int:pk>/delete/', views.JunctionBoxDeleteView.as_view(), name='junctionbox_delete'),
     path('junction-boxes/<int:pk>/changelog/', ObjectChangeLogView.as_view(), name='junctionbox_changelog', kwargs={'model': models.JunctionBox}),
     path('junction-boxes/delete/', views.JunctionBoxBulkDeleteView.as_view(), name='junctionbox_bulk_delete'),
+    path('junction-boxes/<int:pk>/network-map/', views.JunctionBoxNetworkMapView.as_view(), name='junctionbox_network_map'),
+    path('junction-boxes/<int:pk>/network-map/download/', views.JunctionBoxNetworkMapSVGDownloadView.as_view(), name='junctionbox_network_map_download'),
 
     # -------------------------------------------------------------------------
     # Terminal URLs
@@ -40,4 +42,8 @@ urlpatterns = (
     path('conduits/delete/', views.ConduitBulkDeleteView.as_view(), name='conduit_bulk_delete'),
     path('cables/<int:pk>/path-trace/', views.CableConduitCustomTraceView.as_view(), name='cable_custom_trace'),
     path('cables/<int:pk>/path-trace/download/', views.CableConduitSVGDownloadView.as_view(), name='cable_trace_download'),
+
+
+    path('junction-boxes/<int:pk>/network-map/', views.JunctionBoxNetworkMapView.as_view(), name='junctionbox_network_trace'),
+    path('junction-boxes/<int:pk>/network-map/download/', views.JunctionBoxNetworkMapSVGDownloadView.as_view(), name='junctionbox_network_trace_download'),
 )

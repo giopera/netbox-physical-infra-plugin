@@ -1,0 +1,22 @@
+{# netbox_physical_infra_plugin/networkmap.html #}
+{% extends 'generic/object.html' %}
+{% load helpers %}
+
+{% block content %}
+  <div class="row">
+    <div class="col col-md-12">
+      <div class="card">
+        <h5 class="card-header d-flex justify-content-between align-items-center">
+          <span>Infrastructure Map from {{ object }}</span>
+          <a href="{% url 'plugins:netbox_physical_infra_plugin:junctionbox_network_map_download' object.pk %}"
+             class="btn btn-sm btn-primary">
+            <i class="mdi mdi-download"></i> Download SVG
+          </a>
+        </h5>
+        <div class="card-body" style="overflow:auto">
+          {{ svg_content }}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

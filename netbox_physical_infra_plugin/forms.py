@@ -51,22 +51,29 @@ class JunctionBoxForm(NetBoxModelForm):
 # --- Terminal Forms ---
 
 class TerminalForm(NetBoxModelForm):
-    junction_box = DynamicModelChoiceField(queryset=JunctionBox.objects.all())
-
     class Meta:
         model = Terminal
-        fields = ('junction_box', 'name', 'position', 'description', 'tags')
+        fields = ('junction_box', 'name', 'position', 'index', 'description', 'tags')
 
 
 class TerminalBulkAddForm(forms.Form):
-    """Special form mimicking NetBox interface additions using pattern expansions."""
-    junction_box = DynamicModelChoiceField(queryset=JunctionBox.objects.all())
-    name_pattern = ExpandableNameField(
-        label='Name',
-        help_text='Alphanumeric ranges are supported. (e.g. T[1-4] generates T1, T2, T3, T4)'
+    junction_box = forms.ModelChoiceField(
+        queryset=JunctionBox.objects.all(),
+        required=True
     )
-    position = forms.ChoiceField(choices=ConnectionPositionChoices, required=True)
-    description = forms.CharField(max_length=200, required=False)
+    position = forms.ChoiceField(
+        choices=ConnectionPositionChoices,
+        required=True
+    )
+    starting_index = forms.IntegerField(
+        initial=1,
+        min_value=1,
+        help_text="Starting index position along edge"
+    )
+    name_pattern = forms.CharField(
+        help_text="Pattern expansion, e.g. T[1-10]"
+    )
+    description = forms.CharField(required=False)
 
 
 # --- Conduit Forms ---
@@ -170,3 +177,4 @@ class TerminalFilterForm(NetBoxModelFilterSetForm):
 
 class ConduitFilterForm(NetBoxModelFilterSetForm):
     model = Conduit
+

@@ -1,6 +1,7 @@
 import django_tables2 as tables
 from netbox.tables import NetBoxTable, ChoiceFieldColumn, columns
 from .models import JunctionBox, Terminal, Conduit
+from netbox_physical_infra_plugin import models
 
 class JunctionBoxTable(NetBoxTable):
     name = tables.Column(linkify=True)
@@ -21,9 +22,9 @@ class TerminalTable(NetBoxTable):
     tags = columns.TagColumn(url_name='plugins:netbox_physical_infra_plugin:terminal_list')
 
     class Meta(NetBoxTable.Meta):
-        model = Terminal
-        fields = ('pk', 'id', 'name', 'junction_box', 'position', 'is_connected', 'description', 'actions')
-        default_columns = ('name', 'position', 'is_connected', 'description', 'actions')
+        model = models.Terminal
+        fields = ('pk', 'id', 'name', 'junction_box', 'position', 'index', 'description', 'actions')
+        default_columns = ('name', 'junction_box', 'position', 'index', 'description')
 
 
 class ConduitTable(NetBoxTable):

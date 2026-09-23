@@ -45,13 +45,13 @@ class JunctionBox(NetBoxModel):
 
     @property
     def terminal_visualizer(self):
-        """Groups physical terminal objects by position for the template UI."""
+        """Groups physical terminal objects by position and sequence order for UI rendering."""
         terminals = self.terminals.all()
         return {
-            'up': terminals.filter(position=ConnectionPositionChoices.POSITION_UP),
-            'down': terminals.filter(position=ConnectionPositionChoices.POSITION_DOWN),
-            'left': terminals.filter(position=ConnectionPositionChoices.POSITION_LEFT),
-            'right': terminals.filter(position=ConnectionPositionChoices.POSITION_RIGHT),
+            'up': terminals.filter(position=ConnectionPositionChoices.POSITION_UP).order_by('index'),
+            'down': terminals.filter(position=ConnectionPositionChoices.POSITION_DOWN).order_by('index'),
+            'left': terminals.filter(position=ConnectionPositionChoices.POSITION_LEFT).order_by('index'),
+            'right': terminals.filter(position=ConnectionPositionChoices.POSITION_RIGHT).order_by('index'),
         }
 
 
@@ -60,26 +60,28 @@ class Terminal(NetBoxModel):
     junction_box = models.ForeignKey(to=JunctionBox, on_delete=models.CASCADE, related_name='terminals')
     name = models.CharField(max_length=100, help_text="e.g., Port 1, T1")
     position = models.CharField(max_length=50, choices=ConnectionPositionChoices)
+    index = models.PositiveIntegerField(
+        default=1,
+        help_text="Sequence position along the side (1 = leftmost or topmost)"
+    )
     description = models.CharField(max_length=200, blank=True)
 
     class Meta:
-        ordering = ('junction_box', 'name')
-        unique_together = ('junction_box', 'name')
+        ordering = ('junction_box', 'position', 'index', 'name')
+        unique_together = ('junction_box', 'position', 'index')
 
     def __str__(self):
-        return f"{self.junction_box.name} - {self.name}"
+        return f"{self.junction_box.name} - {self.name} (#{self.index})"
 
     def get_absolute_url(self):
         return reverse('plugins:netbox_physical_infra_plugin:terminal', args=[self.pk])
 
     @property
     def is_connected(self):
-        """Checks if any conduit is terminated to this specific terminal."""
         return self.connected_conduits.exists()
 
     @property
     def connected_conduits(self):
-        """Returns all conduits connected to this terminal as start or end termination."""
         ctype = ContentType.objects.get_for_model(self)
         return Conduit.objects.filter(
             models.Q(start_object_type=ctype, start_object_id=self.pk) |
