@@ -1,3 +1,4 @@
+[![AI Slop Inside](https://sladge.net/badge.svg)](https://sladge.net)
 # Netbox Physical Infra Plugin
 
 Netbox plugin for mapping of physical infrastructure like conduits and junction boxes.

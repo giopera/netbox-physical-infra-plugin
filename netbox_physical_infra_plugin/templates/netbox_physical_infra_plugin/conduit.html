@@ -24,7 +24,7 @@
             <td>{{ object.diameter_mm }} mm</td>
           </tr>
           <tr>
-            <th scope="row">Capacity</th>
+            <th scope="row">Max Capacity</th>
             <td>{{ object.max_capacity_percentage }}%</td>
           </tr>
         </table>
@@ -36,20 +36,12 @@
         <h2 class="card-header">Terminations</h2>
         <table class="table table-hover attr-table">
           <tr>
-            <th scope="row">Start</th>
+            <th scope="row">Start Terminal</th>
             <td>{{ object.start_termination|linkify|placeholder }}</td>
           </tr>
           <tr>
-            <th scope="row">Start Position</th>
-            <td>{{ object.get_start_position_display|placeholder }}</td>
-          </tr>
-          <tr>
-            <th scope="row">End</th>
+            <th scope="row">End Terminal</th>
             <td>{{ object.end_termination|linkify|placeholder }}</td>
-          </tr>
-          <tr>
-            <th scope="row">End Position</th>
-            <td>{{ object.get_end_position_display|placeholder }}</td>
           </tr>
           <tr>
             <th scope="row">Cable Count</th>

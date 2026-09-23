@@ -1,0 +1,63 @@
+{% extends 'generic/object.html' %}
+{% load helpers %}
+
+{% block content %}
+  <div class="row mb-3">
+    <!-- Left Column: Terminal Details -->
+    <div class="col col-12 col-md-6">
+      <div class="card">
+        <h2 class="card-header">Terminal Details</h2>
+        <table class="table table-hover attr-table">
+          <tr>
+            <th scope="row">Name</th>
+            <td>{{ object.name }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Junction Box</th>
+            <td>{{ object.junction_box|linkify }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Position</th>
+            <td>{{ object.get_position_display }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Description</th>
+            <td>{{ object.description|placeholder }}</td>
+          </tr>
+        </table>
+      </div>
+      {% include 'inc/panels/custom_fields.html' %}
+    </div>
+
+    <!-- Right Column: Connection Status & Metadata -->
+    <div class="col col-12 col-md-6">
+      <div class="card">
+        <h2 class="card-header">Connection Status</h2>
+        <table class="table table-hover attr-table">
+          <tr>
+            <th scope="row">Status</th>
+            <td>
+              {% if object.is_connected %}
+                <span class="badge bg-danger">Connected</span>
+              {% else %}
+                <span class="badge bg-success">Available</span>
+              {% endif %}
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Connected Conduit</th>
+            <td>
+              {% for conduit in object.connected_conduits %}
+                <div>{{ conduit|linkify }}</div>
+              {% empty %}
+                {{ None|placeholder }}
+              {% endfor %}
+            </td>
+          </tr>
+        </table>
+      </div>
+      {% include 'inc/panels/tags.html' %}
+      {% include 'inc/panels/comments.html' %}
+    </div>
+  </div>
+{% endblock content %}

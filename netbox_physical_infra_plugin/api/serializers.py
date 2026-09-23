@@ -41,7 +41,7 @@ class ConduitSerializer(NetBoxModelSerializer):
         fields = (
             "id", "url", "display", "name", "label", "length_meters",
             "diameter_mm", "max_capacity_percentage", "start_object_type",
-            "start_object_id", "start_position", "end_object_type",
-            "end_object_id", "end_position", "cables", "tags", "custom_fields",
+            "start_object_id", "end_object_type",
+            "end_object_id", "cables", "tags", "custom_fields",
             "created", "last_updated",
         )
